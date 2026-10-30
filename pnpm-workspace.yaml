@@ -163,7 +163,7 @@ overrides:
   # and excluded from the prod audit via tooling/eslint devDependencies instead.
   "brace-expansion@<1.1.16": "2.1.7" # GHSA-3jxr-9vmj-r5cp (DoS)
   "brace-expansion@>=3.0.0 <5.0.9": "5.0.12" # GHSA-rgw5-rvv9-x895 (DoS)
-  "fast-uri@<3.1.5": "3.1.8" # host confusion via failed backslash authority introducer
+  "fast-uri@<3.1.9": "3.1.9" # GHSA-w74x-v6f9-j3xg (scheme spoofing) / GHSA-wjr9-j795-jxcr (host confusion) / GHSA-xhq7-xmqj-769h / GHSA-333x-w4r6-6crp; and the earlier backslash authority introducer fix
   "sharp@<0.35.5": "0.35.5" # GHSA-wq5f-xc86-pv6w (librsvg CVE-2026-96889) and earlier libheif advisories; next's optional sharp dep resolved to 0.35.3, outside the old <0.35.0 range
   "next@>=16.0.0 <16.4.1": "16.4.2" # GHSA-2464-fhr4-w9xw (RCE in image optimization with SVG) / GHSA-p3m5-59mp-jv5r (Server Actions DoS) / GHSA-vcvr-r3jv-pc5j (RCE in next/og ImageResponse) / GHSA-89xv-2m56-2m9x / GHSA-p9j2-gv94-2wf4 (SSRF in rewrites); covers transitive geist>next & @scalar>next. Keep in lockstep with the `next` catalog entry: a second `next` version forks next-auth's peer instance and detaches the type-extensions augmentation.
   "postcss@<8.5.12": "^8.5.31" # GHSA-6g55-p6wh-862q (sourceMappingURL arbitrary file read)
@@ -172,6 +172,17 @@ overrides:
   "browserslist@<=4.28.6": "4.29.4" # GHSA-c83g-rgw3-j3cx (unbounded memory growth) / GHSA-73wf-gq98-2v4g (prototype write crash via browserslist-stats.json)
   "seroval@<1.6.3": "1.6.11" # GHSA-p6vx-979v-rg4c (fromJSON thenable callable bypass) / GHSA-jp82-f5mq-hwhp (TypedArray memory exhaustion); via solid-js in @tanstack/query-devtools
   "source-map-js@<1.2.2": "1.2.2" # GHSA-68fv-2mgg-jv7q (indexed source-map offset event-loop DoS); via next>postcss
+  "fast-copy@>=4.0.0 <4.1.0": "4.3.1" # GHSA-jggr-w7fw-pc2j (stack exhaustion on deeply-nested values); via @acme/logger>pino-pretty
+  "@babel/core@<7.29.6": "7.29.7" # GHSA-4x5r-pxfx-6jf8 (sourceMappingURL arbitrary file read); via next>styled-jsx
+  # drizzle-kit still declares the deprecated @esbuild-kit/esm-loader, whose
+  # core-utils pins esbuild ~0.18.20. drizzle-kit never loads it (it bundles
+  # its own esbuild ^0.25 and tsx), so lifting the stray copy is inert. Target
+  # the catalog version, not drizzle-kit's 0.25: pointing it at 0.25 also pulled
+  # packages/db's vite and esbuild-register peers off 0.28.
+  "esbuild@<0.25.0": "0.28.2" # GHSA-67mh-4wv8-2f99 (dev server accepts cross-origin requests)
+  # Dev-only (excluded from the --prod gate) but still reported by a plain
+  # `pnpm audit`: js-yaml via @commitlint's cosmiconfig.
+  "js-yaml@>=4.0.0 <4.3.2": "4.3.2" # GHSA-52cp-r559-cp3m / GHSA-5p4m-2wfm-xmqj / GHSA-2883-xcg3-v3hh / GHSA-h67p-54hq-rp68 (quadratic-CPU merge keys & !!omap)
 peerDependencyRules:
   allowedVersions:
     eslint-plugin-react>eslint: "10"

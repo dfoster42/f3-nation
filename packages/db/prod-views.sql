@@ -13,3 +13,9 @@
 -- Prod only: the pg_stat_statements extension installs two views in public,
 -- pg_stat_statements and pg_stat_statements_info. Staging doesn't have it.
 CREATE EXTENSION IF NOT EXISTS pg_stat_statements SCHEMA public;
+
+-- THROWAWAY (never merge): a view like the old hand-made ones, using orgs.website.
+CREATE VIEW public.event_instance_expanded AS
+ SELECT ei.id, o0.name AS ao_name, o0.website AS ao_website
+   FROM event_instances ei
+     LEFT JOIN orgs o0 ON ei.org_id = o0.id AND o0.org_type = 'ao'::org_type;
